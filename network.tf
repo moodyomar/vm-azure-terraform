@@ -16,9 +16,10 @@ resource "azurerm_subnet" "subnetResource" {
 
 # Create public IPs
 resource "azurerm_public_ip" "publicIpResource" {
-  name                = "${var.rg_name}-publicIP"
+  name                = "${var.rg_name}-publicIP-${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+  count                           = var.quantity
   allocation_method   = "Dynamic"
 }
 
@@ -43,20 +44,21 @@ resource "azurerm_network_security_group" "sgResource" {
 
 # Create network interface
 resource "azurerm_network_interface" "nicResource" {
-  name                = "${var.rg_name}-nic"
+  name                = "${var.rg_name}-nic${count.index}"
+  count               = var.quantity
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "myNicConfiguration"
+    name                          = "myNicConfiguration-${count.index}"
     subnet_id                     = azurerm_subnet.subnetResource.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.publicIpResource.id
+    public_ip_address_id          = element(azurerm_public_ip.publicIpResource.*.id,count.index)
   }
 }
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "example" {
-  network_interface_id      = azurerm_network_interface.nicResource.id
+  network_interface_id      = azurerm_network_interface.nicResource[0].id
   network_security_group_id = azurerm_network_security_group.sgResource.id
 }

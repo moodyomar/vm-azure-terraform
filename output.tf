@@ -4,6 +4,6 @@ output "private_key" {
 }
 
 output "azurerm_public_ip" {
-  value     = azurerm_public_ip.publicIpResource.ip_address
+  value     = ["${azurerm_public_ip.publicIpResource.*.ip_address}"]
   sensitive = false
 }

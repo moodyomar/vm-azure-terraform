@@ -1,16 +1,17 @@
 resource "azurerm_linux_virtual_machine" "vm-resource" {
-  name                            = "${var.rg_name}-VM"
+  name                            = "${var.rg_name}-VM${count.index}"
+  admin_username                  = "${var.username}${count.index}"
   resource_group_name             = var.rg_name
   location                        = var.location_name
   size                            = var.vm_size
-  count                           = 1
-  admin_username                  = var.username
+  count                           = var.quantity
   disable_password_authentication = true
-  network_interface_ids           = [azurerm_network_interface.nicResource.id]
+  network_interface_ids           = [element(azurerm_network_interface.nicResource.*.id, count.index)]
+
 
 
   admin_ssh_key {
-    username   = var.username
+    username   = "${var.username}${count.index}"
     public_key = tls_private_key.ssh.public_key_openssh
   }
 

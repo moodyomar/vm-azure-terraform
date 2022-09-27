@@ -14,8 +14,10 @@ variable "username" {
 
 variable "vm_size" {
   default     = "Standard_DS1_v2"
-  description = "the virtual machine size / type"
+  description = "the virtual machine size/type"
 }
 
-
-
+variable "quantity" {
+  default     = 3
+  description = "Virtual machines quantity"
+}
