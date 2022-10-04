@@ -1,6 +1,6 @@
 # Create a simple Resource group in Azure using terraform
 
-#### It Creates the following:
+#### It Creates the following resources:
 ##### - Network Interface Card
 ##### - Virtual Machine
 ##### - Virtual Network
